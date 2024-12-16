@@ -55,3 +55,4 @@ Lo primero que tenemos que hacer es arrancar el contenedor, para ello vamos a ej
 - **php:7.4-apache**: Especifica la imagen a utilizar.
  
  ![8](/Imágenes_png/8.png) 
+ 
