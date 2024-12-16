@@ -106,3 +106,71 @@ Explicación de parámetros:
 
 ![14](/Imágenes_png/14.png) 
 
+Verificamos si el contenedor está corriendo invocando el comando:
+
+>docker ps 
+
+![15](/Imágenes_png/15.png) 
+
+Como podemos ver, el contenedor está corriendo perfectamente.
+
+## Resultados
+
+- Pantallazo que desde el navegador muestre el fichero index.html.
+- Pantallazo que desde el navegador muestre el fichero index.php.
+
+Para sacar los pantallazos primero creamos una carpeta en el sistema para los archivos web:
+
+>mkdir -p ~/web-content
+
+Después, creamos un archivo index.html:
+
+>echo '<!DOCTYPE html><html><body><h1>Bienvenido</h1></body></html>' > ~/web-content/index.html
+
+A continuación, creamos un archivo index.php que pruebe la conexión con MariaDB:
+
+>echo '<?php $conn = new mysqli("host.docker.internal", "invitado", "invitado", "prueba"); echo $conn->connect_error ? "Error de conexión" : "Conexión exitosa"; ?>' > ~/web-content/index.php
+
+Después, levantamos el contenedor:
+
+>docker run --name servidor-web -v ~/web-content:/var/www/html -p 8080:80 -d php:apache
+
+![16](/Imágenes_png/16.png) 
+
+Y para terminar accedemos a http://localhost:8080/index.html y http://localhost:8080/index.php en el navegador y tomamos los pantallazos:
+
+![17](/Imágenes_png/17.png) 
+
+En este paso hemos tenido un problema que no hemos podido solucionar:
+
+![18](/Imágenes_png/18.png) 
+
+- Pantallazo donde se vea el tamaño del contenedor web después de crear los dos ficheros.
+
+![19](/Imágenes_png/19.png) 
+
+- Pantallazo donde desde un cliente de base de datos (instalado en tu ordenador) se pueda observar que hemos podido conectarnos al servidor de base de datos con el usuario creado y que se ha creado la base de datos prueba (show databases). El acceso se debe realizar desde el ordenador que tenéis instalado docker, no hay que acceder desde dentro del contenedor, es decir, no usar docker exec.
+
+Para ello invocamos el comando:
+
+>mariadb -h 127.0.0.1 -P 3336 -u invitado -pinvitado
+
+Después, desde dentro de la base de datos invocamos:
+
+>show databases;
+
+Y este es el resultado:
+
+![20](/Imágenes_png/20.png)
+
+- Pantallazo donde se comprueba que no se puede borrar la imagen mariadb mientras el contenedor bbdd está creado.
+
+Para realizar este paso, simplemente invocamos el comando:
+
+>docker rmi Mariadb
+
+y como el contenedor está corriendo, no nos va a permitir borrarlo:
+
+![21](/Imágenes_png/21.png)
+
+Para borrarlo, debemos de pararlo primero y luego invocar el comando **docker rm id del contenedor**.
