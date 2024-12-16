@@ -53,4 +53,5 @@ Lo primero que tenemos que hacer es arrancar el contenedor, para ello vamos a ej
 - **--name web**: Nombra el contenedor como web.
 - **-p 8000:80**: Mapea el puerto 8000 de tu máquina al puerto 80 del contenedor.
 - **php:7.4-apache**: Especifica la imagen a utilizar.
-
+ 
+ ![8](/Imágenes_png/8.png) 
