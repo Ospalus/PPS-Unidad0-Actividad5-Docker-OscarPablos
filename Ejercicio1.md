@@ -75,10 +75,5 @@ Para la realización de este apartado, tendremos que invocar el comando **docker
 
 Y después invocamos **docker ps** para verificar que no hay ningún contenedor corriendo:
 
-  ![7](/Imágenes_png/7.png) 
+  ![hola](/Imágenes_png/7.png) 
 
-
-
-<p align="center">
-          <img src="/Imágenes_png/6.png" alt="">
-        </p>
