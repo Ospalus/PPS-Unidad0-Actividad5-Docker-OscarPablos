@@ -42,3 +42,26 @@ Deberás entregar los siguientes pantallazos comprimidos en un zip o en un docum
 - Pantallazo donde se vea el fichero docker-compose.yaml.
 - Pantallazo donde se vea los contenedores funcionando con la instrucción docker-compose.
 - Pantallazo donde se vea el acceso desde el navegador a la aplicación.
+
+## Resultados
+
+### Despliegue de Nextcloud
+
+1. Tenemos ya docker-compose instalado. Ahora creamos el archivo *docker-compose.yml* y agregamos lo siguiente:
+
+![46](/Imágenes_png/46.png)
+
+Después levantamos el escenario invocando:
+
+>docker-compose up -d
+
+Y para ver si todo va bien, invocamos:
+
+>docker-compose ps
+
+![47](/Imágenes_png/47.png)
+
+Y vemos que todos los servicios están levantados y corriendo perfectamente. Ahora nos vamos al navegador a la dirección http://localhost:8080/ y deberíamos ver lo siguiente:
+
+![48](/Imágenes_png/48.png)
+
