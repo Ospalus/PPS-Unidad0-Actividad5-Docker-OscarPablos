@@ -127,4 +127,66 @@ Para el contenedor c2 (puerto 8282), invocamos:
 
 >docker run -d --name c2 -p 8282:80 -v ~/saludo:/var/www/html php:7.4-apache
 
+**Explicación de comandos:**
+
+Explicamos este último caso pero el anterior es prácticamente igual:
+
+- **docker run**
+Inicia un nuevo contenedor a partir de una imagen especificada (en este caso, php:7.4-apache).
+
+- **-d**
+Ejecuta el contenedor en modo desprendido (detached mode), es decir, en segundo plano. Esto permite que sigas usando la terminal mientras el contenedor sigue ejecutándose.
+
+-  **--name c1**
+Asigna un nombre al contenedor, en este caso c1. Esto es útil para identificarlo más fácilmente al gestionarlo (por ejemplo, con docker ps, docker stop, etc.).
+
+- **-p 8181:80**
+Configura el mapeo de puertos entre el sistema anfitrión y el contenedor.
+
+En este caso:
+
+        - 8181 es el puerto del sistema anfitrión (mi máquina).
+        - 80 es el puerto del contenedor que se redirige al puerto del anfitrión.
+
+Esto significa que cualquier acceso al puerto 8181 en la máquina anfitriona se redirigirá al puerto 80 del contenedor. Dado que el contenedor utiliza Apache (que escucha en el puerto 80 por defecto), esto permite acceder al servidor web del contenedor desde el navegador en http://localhost:8181.
+
+- **-v ~/saludo:/var/www/html**
+
+Crea un bind mount, que conecta una carpeta de la máquina anfitriona con una carpeta dentro del contenedor.
+
+En este caso:
+
+        - ~/saludo es la carpeta en tu máquina anfitriona.
+        - /var/www/html es la carpeta en el contenedor.
+
+El resultado es que cualquier archivo en ~/saludo estará accesible dentro del contenedor en /var/www/html. Si modificas los archivos en ~/saludo, los cambios se reflejarán inmediatamente en el contenedor (sin necesidad de reiniciarlo).
+
+- **php:7.4-apache**
+
+Especifica la imagen de Docker que se utilizará para crear el contenedor.
+
+En este caso:
+
+    - php es el nombre de la imagen base.
+    - 7.4-apache es la etiqueta (tag) que indica la versión de PHP (7.4) y el   servidor web (Apache) que incluye.
+
+Esta imagen tiene Apache configurado para servir contenido desde /var/www/html, por lo que al hacer el bind mount con esa carpeta, el contenedor sirve los archivos de ~/saludo.
+
 ![29](/Imágenes_png/29.png)
+
+Una vez que los contenedores estén corriendo, podremos acceder a ellos a través de los puertos indicados:
+- http://localhost:8181 para ver el contenido del archivo index.html en el contenedor c1.
+- http://localhost:8282 para ver el contenido del archivo index.html en el contenedor c2.
+
+El resultado:
+
+![30](/Imágenes_png/30.png)
+
+Ahora como pide el ejercicio, vamos a modificar el *index.html* para cambiar el contenido:
+
+![31](/Imágenes_png/31.png)
+
+Ahora refrescamos las dos páginas anteriores y vemos como los cambios en el archivo *index.html* son reflejados:
+
+![32](/Imágenes_png/32.png)
+
