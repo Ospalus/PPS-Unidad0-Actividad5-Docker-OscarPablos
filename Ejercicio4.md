@@ -47,3 +47,77 @@ Deberás entregar los siguientes pantallazos comprimidos en un zip o en un docum
 - Pantallazo con la instrucción para crear el contenedor de la base de datos.
 - Pantallazo con la instrucción para crear el contenedor de la aplicación.
 - Pantallazo donde se ve el acceso a la aplicación desde un navegador web.
+
+## Resultados
+
+1. Vamos a crear las redes socilitadas con una dirección específica. Para la **red1** invocamos:
+
+>docker network create --subnet=172.28.0.0/16 --gateway=172.28.0.1 red1
+
+Creamos también la **red2**:
+
+>docker network create red2
+
+Tendriámos un resultado así:
+
+![33](/Imágenes_png/33.png)
+
+Ahora vamos a crear y ejecutar el contenedor **u1** en la **red1**, para ello invocamos el comando:
+
+>docker run -d --name u1 --hostname host1 --net red1 --ip 172.28.0.10 ubuntu:20.04 sleep infinity
+
+
+![34](/Imágenes_png/34.png)
+
+Después accedemos al contenedor **u1** e instalamos *ping*:
+
+>docker exec -it u1 bash
+
+>apt update && apt install -y inetutils-ping iproute2
+
+![36](/Imágenes_png/36.png)
+
+Después, creamos y ejecutamos el contenedor **u2** en la **red2** (Docker asignará la IP automáticamente):
+
+>docker run -d --name u2 --hostname host2 --net red2 ubuntu:20.04 sleep infinity
+
+![35](/Imágenes_png/35.png)
+
+Después accedemos al contenedor **u2** e instalamos *ping*:
+
+>docker exec -it u2 bash
+
+>apt update && apt install -y inetutils-ping iproute2
+
+
+![37](/Imágenes_png/37.png)
+
+Vamos ahora con los pantallazos pedidos. Pantallazo donde se vea la configuración de red del contenedor u1:
+
+>docker exec -it u1 bash
+
+>ip a
+
+![38](/Imágenes_png/38.png)
+
+Pantallazo donde se vea la configuración de red del contenedor u2:
+
+>docker exec -it u2 bash
+
+>ip a
+
+![39](/Imágenes_png/39.png)
+
+El ejercicio nos pide un pantallazo donde no podamos hacer ping entre los contenedores mientras que no los conectemos. Hacer ping es imposible porque están en redes diferentes pero aun así, vamos a intentarlo:
+
+![41](/Imágenes_png/41.png)
+
+No podemos hacer ping. Para poder hacer ping, tenemos que conectar los contenedores porque se encuentran en redes diferentes, para ello invocamos 
+
+>docker network connect red2 u1
+
+Después entramos en el contenedor u1 y hacemos ping al host2:
+
+![40](/Imágenes_png/40.png)
+
+

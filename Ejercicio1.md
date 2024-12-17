@@ -1,6 +1,6 @@
 # Ejercicio 1 #
 
-## Enunciado ##
+### Enunciado ###
 
 **Ejercicio para entregar**
 
