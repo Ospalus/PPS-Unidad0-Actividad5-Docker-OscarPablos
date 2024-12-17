@@ -49,7 +49,7 @@ Deberás entregar los siguientes pantallazos comprimidos en un zip o en un docum
 - Pantallazo donde se ve el acceso a la aplicación desde un navegador web.
 
 ## Resultados
-
+### Trabajar con redes docker
 1. Vamos a crear las redes socilitadas con una dirección específica. Para la **red1** invocamos:
 
 >docker network create --subnet=172.28.0.0/16 --gateway=172.28.0.1 red1
@@ -120,4 +120,71 @@ Después entramos en el contenedor u1 y hacemos ping al host2:
 
 ![40](/Imágenes_png/40.png)
 
+
+### Despliegue de Nextcloud + mariadb/postgreSQL
+
+1. Crear la red de tipo bridge
+Primero, creamos una red de tipo bridge para que ambos contenedores (el de la base de datos y el de Nextcloud) puedan comunicarse entre sí. Para ello invocamos:
+
+>docker network create --driver bridge nextcloud_network
+
+![42](/Imágenes_png/42.png)
+
+
+2. Creamos el contenedor de MariaDB
+
+Usaremos la imagen mariadb:10.5 para crear el contenedor de la base de datos. Especificamos la red creada y las variables de entorno necesarias (como el nombre de la base de datos, el usuario y la contraseña). Además, utilizamos un volumen para persistir los datos.
+
+>docker run -d --name mariadb \
+  --network nextcloud_network \
+  -e MYSQL_ROOT_PASSWORD=root_password \
+  -e MYSQL_DATABASE=nextcloud \
+  -e MYSQL_USER=nextcloud_user \
+  -e MYSQL_PASSWORD=nextcloud_password \
+  -v mariadb_data:/var/lib/mysql \
+  mariadb:10.5
+
+**Explicación de comandos:**
+
+- MYSQL_ROOT_PASSWORD: La contraseña del usuario root de la base de datos.
+- MYSQL_DATABASE: El nombre de la base de datos que se creará.
+- MYSQL_USER: El nombre del usuario de la base de datos.
+- MYSQL_PASSWORD: La contraseña del usuario de la base de datos.
+- mariadb_data: Volumen de Docker que persistirá los datos de la base de datos.
+
+![43](/Imágenes_png/43.png)
+
+
+3. Creamos el contenedor de Nextcloud
+
+Luego, creamos el contenedor de Nextcloud y lo conectamos a la misma red. Se deben proporcionar las variables de entorno necesarias para que Nextcloud pueda conectarse a la base de datos de MariaDB.
+
+>docker run -d --name nextcloud \
+  --network nextcloud_network \
+  -e MYSQL_PASSWORD=nextcloud_password \
+  -e MYSQL_DATABASE=nextcloud \
+  -e MYSQL_USER=nextcloud_user \
+  -e MYSQL_HOST=mariadb \
+  -v nextcloud_data:/var/www/html \
+  -p 8080:80 \
+  nextcloud
+
+**Explicación de comandos:**
+
+- MYSQL_PASSWORD: La contraseña del usuario de la base de datos (debe coincidir con la de la creación de MariaDB).
+- MYSQL_DATABASE: El nombre de la base de datos que Nextcloud usará (debe coincidir con el nombre de la base de datos en MariaDB).
+- MYSQL_USER: El nombre de usuario para la base de datos.
+- MYSQL_HOST: El nombre del contenedor de la base de datos (mariadb en este caso).
+nextcloud_data: Volumen de Docker que persistirá los datos de Nextcloud.
+- -p 8080:80: Exponer Nextcloud en el puerto 8080 de tu máquina local.
+
+![44](/Imágenes_png/44.png)
+
+4. Acceder a la aplicación desde un navegador web
+
+Una vez que ambos contenedores estén en funcionamiento, puedes acceder a Nextcloud desde tu navegador utilizando la dirección http://localhost:8080 
+
+Y el resultado es este:
+
+![45](/Imágenes_png/45.png)
 
